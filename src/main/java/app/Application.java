@@ -27,6 +27,9 @@ package app;
 
  */
 
+import app.hibernate.HibernateUtil;
+import org.hibernate.SessionFactory;
+import org.hibernate.classic.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +38,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.*;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,8 +62,27 @@ public class Application implements CommandLineRunner {
     private boolean help = false;
 
     public static void main(String args[]) {
+        Employee employee = new Employee("M1", "Mz", "2122355458");
+        employee = save(employee);
+
         SpringApplication.run(Application.class, args);
     }
+
+    private static Employee save(Employee employee) {
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        session.beginTransaction();
+
+        Long id = (Long) session.save(employee);
+        employee.setId(id);
+
+        session.getTransaction().commit();
+
+        session.close();
+
+        return employee;
+    }
+
 
     private boolean argumentsValidation(String... args){
 
