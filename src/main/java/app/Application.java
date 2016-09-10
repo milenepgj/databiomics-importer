@@ -27,6 +27,8 @@ package app;
 
  */
 
+import app.dto.Employee;
+import app.dto.Sequence;
 import app.hibernate.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -38,9 +40,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.*;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,6 +62,7 @@ public class Application implements CommandLineRunner {
     private boolean help = false;
 
     public static void main(String args[]) {
+
         Employee employee = new Employee("M1", "Mz", "2122355458");
         employee = save(employee);
 

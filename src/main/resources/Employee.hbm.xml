@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="app">
+<hibernate-mapping package="app.dto">
 
     <class name="Employee" table="employee">
         <id name="id" column="id">

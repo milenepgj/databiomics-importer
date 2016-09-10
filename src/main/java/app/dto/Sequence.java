@@ -5,23 +5,23 @@ package app.dto;
  */
 public class Sequence {
 
-    String seqname;
+    String seqName;
     String description;
-    Long length;
-    Long numberhits;
-    String e_value;
-    Double sim_mean;
-    String interpro_ids;
+    Integer length;
+    Integer numberHits;
+    String eValue;
+    Double simMean;
+    String interproIds;
     String go;
-    String go_names;
+    String goNames;
+    String enzimeCodes;
 
-
-    public String getSeqname() {
-        return seqname;
+    public String getSeqName() {
+        return seqName;
     }
 
-    public void setSeqname(String seqname) {
-        this.seqname = seqname;
+    public void setSeqName(String seqName) {
+        this.seqName = seqName;
     }
 
     public String getDescription() {
@@ -32,52 +32,44 @@ public class Sequence {
         this.description = description;
     }
 
-    public Long getLength() {
+    public Integer getLength() {
         return length;
     }
 
-    public void setLength(Long length) {
+    public void setLength(Integer length) {
         this.length = length;
     }
 
-    public Long getNumberhits() {
-        return numberhits;
+    public Integer getNumberHits() {
+        return numberHits;
     }
 
-    public void setNumberhits(Long numberhits) {
-        this.numberhits = numberhits;
+    public void setNumberHits(Integer numberHits) {
+        this.numberHits = numberHits;
     }
 
-    public String getE_value() {
-        return e_value;
+    public String getEValue() {
+        return eValue;
     }
 
-    public void setE_value(String e_value) {
-        this.e_value = e_value;
+    public void setEValue(String eValue) {
+        this.eValue = eValue;
     }
 
-    public Double getSim_mean() {
-        return sim_mean;
+    public Double getSimMean() {
+        return simMean;
     }
 
-    public void setSim_mean(Double sim_mean) {
-        this.sim_mean = sim_mean;
+    public void setSimMean(Double simMean) {
+        this.simMean = simMean;
     }
 
-    public String getInterpro_ids() {
-        return interpro_ids;
+    public String getInterproIds() {
+        return interproIds;
     }
 
-    public void setInterpro_ids(String interpro_ids) {
-        this.interpro_ids = interpro_ids;
-    }
-
-    public String getGo_names() {
-        return go_names;
-    }
-
-    public void setGo_names(String go_names) {
-        this.go_names = go_names;
+    public void setInterproIds(String interproIds) {
+        this.interproIds = interproIds;
     }
 
     public String getGo() {
@@ -86,5 +78,21 @@ public class Sequence {
 
     public void setGo(String go) {
         this.go = go;
+    }
+
+    public String getGoNames() {
+        return goNames;
+    }
+
+    public void setGoNames(String goNames) {
+        this.goNames = goNames;
+    }
+
+    public String getEnzimeCodes() {
+        return enzimeCodes;
+    }
+
+    public void setEnzimeCodes(String enzimeCodes) {
+        this.enzimeCodes = enzimeCodes;
     }
 }

@@ -1,4 +1,4 @@
-package app;
+package app.dto;
 
 /**
  * Created by milene.guimaraes on 29/08/16.
