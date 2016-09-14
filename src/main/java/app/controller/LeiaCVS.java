@@ -3,6 +3,7 @@ package app.controller;
 
 import app.dto.Employee;
 import app.dto.Sequence;
+import app.dto.UnirefNematoda;
 import app.hibernate.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -20,7 +21,8 @@ public class LeiaCVS {
     public static void main(String[] args) {
 
         LeiaCVS obj = new LeiaCVS();
-        obj.run();
+        //obj.importSequencesData("NCBI");
+        obj.importSequencesData("UNIREF");
 
     }
 
@@ -42,12 +44,27 @@ public class LeiaCVS {
 
     }
 
+    private UnirefNematoda getUnirefNematodaData(String[] line){
+
+        UnirefNematoda unirefNematoda = new UnirefNematoda();
+        unirefNematoda.setSeqName(line[0]);
+        unirefNematoda.setHitsAgaintUniruniref100(line[1]);
+        unirefNematoda.setLength(Integer.parseInt(line[2]));
+        unirefNematoda.setNumberHits(Integer.parseInt(line[3]));
+        unirefNematoda.setEValue(line[4]);
+        unirefNematoda.setSimMean(Double.parseDouble(line[5].replace("%","").replace("-","0").replace(",",".")));
+
+        return unirefNematoda;
+
+    }
+
     private static Sequence save(Sequence sequence) {
+
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session session = sf.openSession();
         session.beginTransaction();
 
-        session.save(sequence);
+        session.saveOrUpdate(sequence);
 
         session.getTransaction().commit();
 
@@ -56,44 +73,81 @@ public class LeiaCVS {
         return sequence;
     }
 
-    public void run() {
+    private static UnirefNematoda save(UnirefNematoda unirefNematoda) {
 
-        //String arquivoCSV = "/home/milene.guimaraes/Documents/Pessoal/databiomics-importer/Tabela_Anotacao_Angiostrongylus_Nr-NCBI";
-        String arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Nr-NCBI";
-        BufferedReader br = null;
-        String linha = "";
-        String csvDivisor = "\\t";
-        List<Sequence> sequences = new ArrayList<Sequence>();
-        boolean header = true;
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        session.beginTransaction();
 
-        try {
+        session.saveOrUpdate(unirefNematoda);
 
-            br = new BufferedReader(new FileReader(arquivoCSV));
-            while ((linha = br.readLine()) != null) {
-                String[] line = linha.split(csvDivisor);
-                if (line[0].equalsIgnoreCase("SeqName")){
-                    header = false;
-                }else{
-                    sequences.add(save(getSequenceData(line)));
+        session.getTransaction().commit();
+
+        session.close();
+
+        return unirefNematoda;
+    }
+
+    public void importSequencesData(String type) {
+
+        String arquivoCSV = "";
+
+        switch (type){
+            case "NCBI":
+                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Nr-NCBI";
+            case "UNIREF":
+                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Nr-NCBI";
+
+        }
+
+        if (arquivoCSV == ""){
+            System.out.println("nothing to do");
+        }else{
+
+            BufferedReader br = null;
+            String linha = "";
+            String csvDivisor = "\\t";
+            List<Sequence> sequences = new ArrayList<Sequence>();
+            List<UnirefNematoda> unirefNematodaSequences = new ArrayList<UnirefNematoda>();
+            boolean header = true;
+
+            try {
+
+                br = new BufferedReader(new FileReader(arquivoCSV));
+                while ((linha = br.readLine()) != null) {
+                    String[] line = linha.split(csvDivisor);
+                    if (line[0].equalsIgnoreCase("SeqName")){
+                        header = false;
+                    }else{
+                        switch (type){
+                            case "NCBI":
+                                sequences.add(save(getSequenceData(line)));
+                            case "UNIREF":
+                                unirefNematodaSequences.add(save(getUnirefNematodaData(line)));
+                        }
+
+                    }
                 }
-            }
 
-            System.out.println(sequences.size());
+                System.out.println(sequences.size());
+                System.out.println(unirefNematodaSequences.size());
 
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-    }
+
+        }
 
 }
