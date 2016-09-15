@@ -48,11 +48,11 @@ public class Sequence {
         this.numberHits = numberHits;
     }
 
-    public String getEValue() {
+    public String geteValue() {
         return eValue;
     }
 
-    public void setEValue(String eValue) {
+    public void seteValue(String eValue) {
         this.eValue = eValue;
     }
 

@@ -30,6 +30,9 @@
 
         <!--<mapping resource="Employee.hbm.xml"></mapping>-->
         <mapping resource="Sequence.hbm.xml"></mapping>
+        <mapping resource="UnirefNematoda.hbm.xml"></mapping>
+        <mapping resource="Uniref100.hbm.xml"></mapping>
+        <mapping resource="Trembl.hbm.xml"></mapping>
 
     </session-factory>
 </hibernate-configuration>

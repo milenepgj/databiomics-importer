@@ -1,12 +1,16 @@
 package app.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by milen_000 on 13/09/2016.
  */
-public class UnirefNematoda {
+public class UnirefNematoda implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     String seqName;
+    String description;
     String orfsPtns;
-    String hitsAgaintUniruniref100;
     Integer length;
     Integer numberHits;
     String eValue;
@@ -20,20 +24,20 @@ public class UnirefNematoda {
         this.seqName = seqName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getOrfsPtns() {
         return orfsPtns;
     }
 
     public void setOrfsPtns(String orfsPtns) {
         this.orfsPtns = orfsPtns;
-    }
-
-    public String getHitsAgaintUniruniref100() {
-        return hitsAgaintUniruniref100;
-    }
-
-    public void setHitsAgaintUniruniref100(String hitsAgaintUniruniref100) {
-        this.hitsAgaintUniruniref100 = hitsAgaintUniruniref100;
     }
 
     public Integer getLength() {
@@ -52,11 +56,11 @@ public class UnirefNematoda {
         this.numberHits = numberHits;
     }
 
-    public String setEValue() {
+    public String geteValue() {
         return eValue;
     }
 
-    public void setEValue(String eValue) {
+    public void seteValue(String eValue) {
         this.eValue = eValue;
     }
 

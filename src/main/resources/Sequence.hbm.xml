@@ -10,7 +10,7 @@
         <property name="description" column="description"/>
         <property name="length" type="integer" column="length"/>
         <property name="numberHits" type="integer" column="numberhits"/>
-        <property name="EValue" column="e_value"/>
+        <property name="eValue" column="e_value"/>
         <property name="simMean" type="java.lang.Double" column="sim_mean"/>
         <property name="interproIds" type="text" column="interpro_ids"/>
     </class>

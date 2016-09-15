@@ -5,14 +5,16 @@
 
 <hibernate-mapping package="app.dto">
 
-    <class name="UnirefNematoda" table="sequence">
-        <id name="seqName" column="seqname"/>
-        <property name="description" column="description"/>
+    <class name="UnirefNematoda" table="unirefnematoda">
+        <composite-id>
+            <key-property name="seqName" column="seqName"></key-property>
+            <key-property name="orfsPtns" column="orfs_ptns"></key-property>
+        </composite-id>
+        <property name="description" type="text" column="description"/>
         <property name="length" type="integer" column="length"/>
         <property name="numberHits" type="integer" column="numberhits"/>
-        <property name="EValue" column="e_value"/>
+        <property name="eValue" column="e_value"/>
         <property name="simMean" type="java.lang.Double" column="sim_mean"/>
-        <property name="interproIds" type="text" column="interpro_ids"/>
     </class>
 
 </hibernate-mapping>
