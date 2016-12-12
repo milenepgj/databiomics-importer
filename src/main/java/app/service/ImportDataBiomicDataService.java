@@ -1,4 +1,4 @@
-package app.controller;
+package app.service;
 
 
 import app.dto.Sequence;
