@@ -109,6 +109,17 @@ public class ImportDataBiomicDataService {
 
     }
 
+    private MRnaFasta getMRnaFastaData(String seqName, String fastaDescription, String fastaContent){
+
+        MRnaFasta fasta = new MRnaFasta();
+        fasta.setSeqName(seqName);
+        fasta.setFastaDescription(fastaDescription);
+        fasta.setFastaContent(fastaContent);
+
+        return fasta;
+
+    }
+
     public void importSequencesData(String type) {
 
         String arquivoCSV = "";
@@ -203,7 +214,7 @@ public class ImportDataBiomicDataService {
             String seqName = "";
             String orfsPtns = "";
             String fastaDescription = "";
-            String fastaContent = "";
+            StringBuilder fastaContent = null;
             Fasta fasta = null;
             int qtdLinhas = 0;
             try {
@@ -217,7 +228,7 @@ public class ImportDataBiomicDataService {
 
                         if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
                             //Salva o fasta (para nematoda, uniref e trembl)
-                            fasta.setFastaContent(fastaContent);
+                            fasta.setFastaContent(fastaContent.toString());
                             //fasta = (Fasta)save(fasta);
                             fastasToSave.add(fasta);
 
@@ -227,8 +238,11 @@ public class ImportDataBiomicDataService {
                         fasta = getFastaIdentity(linha);
 
                     }else{
-                        if (fastaContent != "") fastaContent += System.getProperty("line.separator");
-                        fastaContent += linha;
+                        if (fastaContent != null) {
+                            fastaContent.append(System.getProperty("line.separator"));
+                        }
+                        fastaContent = new StringBuilder();
+                        fastaContent.append(linha);
                     }
 
                 }
@@ -237,7 +251,7 @@ public class ImportDataBiomicDataService {
                     //Salva o último fasta
                     //fastas = saveFastaData(fasta, fastaContent, fastas);
 
-                    fasta.setFastaContent(fastaContent);
+                    fasta.setFastaContent(fastaContent.toString());
                     //fasta = (Fasta)save(fasta);
                     fastasToSave.add(fasta);
                 }
@@ -246,7 +260,7 @@ public class ImportDataBiomicDataService {
 
                 for (int i=0; i<fastasToSave.size(); i++) {
                     fasta = (Fasta)save(fastasToSave.get(i));
-                    fastas = saveFastaData(fastasToSave.get(i), fastaContent, fastas);
+                    fastas = saveFastaData(fastasToSave.get(i), fastaContent.toString(), fastas);
                 }
 
                 System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
@@ -294,6 +308,13 @@ public class ImportDataBiomicDataService {
         return getFastaData(seqName, orfsPtns, fastaDescription, "");
     }
 
+    private MRnaFasta getMRnaFastaIdentity (String linha) {
+        String[] sequenceIdentity = linha.split("\\|");
+        String seqName = sequenceIdentity[0].replaceAll(">", "");
+        String fastaDescription = sequenceIdentity[1];
+
+        return getMRnaFastaData(seqName, fastaDescription, "");
+    }
 
     private static Object save(Object object) {
 
@@ -379,6 +400,91 @@ public class ImportDataBiomicDataService {
         session.close();
 
         return returnObject;
+
+    }
+
+    public void importMRnaFastaData(String filesPath, String file) {
+
+        if (filesPath == "" || file == ""){
+            System.out.println("nothing to do");
+        }else{
+
+            BufferedReader br = null;
+            String linha = "";
+            String sequenceCharIdentity = ">";
+            List<MRnaFasta> fastas = new ArrayList<MRnaFasta>();
+            List<MRnaFasta> fastasToSave = new ArrayList<MRnaFasta>();
+            String seqName = "";
+            String orfsPtns = "";
+            String fastaDescription = "";
+            StringBuilder fastaContent = null;
+            MRnaFasta fasta = null;
+            int qtdLinhas = 0;
+            try {
+
+                br = new BufferedReader(new FileReader(filesPath + File.separator + file));
+                while ((linha = br.readLine()) != null) {
+
+                    qtdLinhas++;
+
+                    if (linha.contains(sequenceCharIdentity)){
+
+                        if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                            //Salva o fasta (para nematoda, uniref e trembl)
+                            fasta.setFastaContent(fastaContent.toString());
+                            //fasta = (Fasta)save(fasta);
+                            fastasToSave.add(fasta);
+
+                            //fastas = saveFastaData(fasta, fastaContent, fastas);
+                        }
+
+                        fasta = getMRnaFastaIdentity(linha);
+
+                    }else{
+                        if (fastaContent != null) {
+                            fastaContent.append(System.getProperty("line.separator"));
+                        }
+                        fastaContent = new StringBuilder();
+                        fastaContent.append(linha);
+                    }
+
+                }
+
+                if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                    //Salva o último fasta
+                    //fastas = saveFastaData(fasta, fastaContent, fastas);
+
+                    fasta.setFastaContent(fastaContent.toString());
+                    //fasta = (Fasta)save(fasta);
+                    fastasToSave.add(fasta);
+                }
+
+                System.out.println("TOTAL FASTA ITEMS PARA SALVAR:" + fastasToSave.size());
+
+                for (int i=0; i<fastasToSave.size(); i++) {
+                    fasta = (MRnaFasta)save(fastasToSave.get(i));
+                    fastas = saveFastaData(fastasToSave.get(i), fastaContent.toString(), fastas);
+                }
+
+                System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
+
+            } catch (FileNotFoundException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        System.out.println ("linhas: " + qtdLinhas);
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
     }
 
