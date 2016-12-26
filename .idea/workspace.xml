@@ -2,18 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f42c413b-794c-4362-ac41-d7c2d0aed28a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/Application.java" afterPath="$PROJECT_DIR$/src/main/java/app/Application.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/ImportFastaApplication.java" afterPath="$PROJECT_DIR$/src/main/java/app/ImportFastaApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/dto/Fasta.java" afterPath="$PROJECT_DIR$/src/main/java/app/dto/Fasta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/dto/Trembl.java" afterPath="$PROJECT_DIR$/src/main/java/app/dto/Trembl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/dto/Uniref100.java" afterPath="$PROJECT_DIR$/src/main/java/app/dto/Uniref100.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/dto/UnirefNematoda.java" afterPath="$PROJECT_DIR$/src/main/java/app/dto/UnirefNematoda.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/app/service/ImportDataBiomicDataService.java" afterPath="$PROJECT_DIR$/src/main/java/app/service/ImportDataBiomicDataService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/Sequence.hbm.xml" afterPath="$PROJECT_DIR$/src/main/resources/Sequence.hbm.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/Trembl.hbm.xml" afterPath="$PROJECT_DIR$/src/main/resources/Trembl.hbm.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/Uniref100.hbm.xml" afterPath="$PROJECT_DIR$/src/main/resources/Uniref100.hbm.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/UnirefNematoda.hbm.xml" afterPath="$PROJECT_DIR$/src/main/resources/UnirefNematoda.hbm.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/fastas/Angiostrongylus_mRNA_annotation.fasta.fasta" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/fastas/Angiostrongylys_proteome_Uniref100_annotation.fasta.fasta" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/fastas/exemplo1.fasta" afterPath="" />
     </list>
     <ignored path="databiomics-importer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -860,12 +851,12 @@
       <workItem from="1482766494335" duration="1678000" />
       <workItem from="1482768239069" duration="568000" />
       <workItem from="1482768843014" duration="264000" />
-      <workItem from="1482769132785" duration="567000" />
+      <workItem from="1482769132785" duration="648000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15173000" />
+    <option name="totallyTimeSpent" value="15254000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
