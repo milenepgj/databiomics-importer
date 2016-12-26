@@ -17,6 +17,8 @@ public class Trembl  implements Serializable {
     String eValue;
     Double simMean;
     String interproIds;
+    String fastaDescription;
+    String fastaContent;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -84,5 +86,21 @@ public class Trembl  implements Serializable {
 
     public void setInterproIds(String interproIds) {
         this.interproIds = interproIds;
+    }
+
+    public String getFastaDescription() {
+        return fastaDescription;
+    }
+
+    public void setFastaDescription(String fastaDescription) {
+        this.fastaDescription = fastaDescription;
+    }
+
+    public String getFastaContent() {
+        return fastaContent;
+    }
+
+    public void setFastaContent(String fastaContent) {
+        this.fastaContent = fastaContent;
     }
 }

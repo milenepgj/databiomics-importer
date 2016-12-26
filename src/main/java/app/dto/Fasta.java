@@ -1,20 +1,17 @@
 package app.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by milene.guimaraes on 09/09/16.
  */
-public class Fasta {
+public class Fasta implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     String seqName;
-    String description;
-    Integer length;
-    Integer numberHits;
-    String eValue;
-    Double simMean;
-    String interproIds;
-    String go;
-    String goNames;
-    String enzimeCodes;
+    String orfsPtns;
+    String fastaDescription;
+    String fastaContent;
 
     public String getSeqName() {
         return seqName;
@@ -24,75 +21,27 @@ public class Fasta {
         this.seqName = seqName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOrfsPtns() {
+        return orfsPtns;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOrfsPtns(String orfsPtns) {
+        this.orfsPtns = orfsPtns;
     }
 
-    public Integer getLength() {
-        return length;
+    public String getFastaDescription() {
+        return fastaDescription;
     }
 
-    public void setLength(Integer length) {
-        this.length = length;
+    public void setFastaDescription(String fastaDescription) {
+        this.fastaDescription = fastaDescription;
     }
 
-    public Integer getNumberHits() {
-        return numberHits;
+    public String getFastaContent() {
+        return fastaContent;
     }
 
-    public void setNumberHits(Integer numberHits) {
-        this.numberHits = numberHits;
-    }
-
-    public String geteValue() {
-        return eValue;
-    }
-
-    public void seteValue(String eValue) {
-        this.eValue = eValue;
-    }
-
-    public Double getSimMean() {
-        return simMean;
-    }
-
-    public void setSimMean(Double simMean) {
-        this.simMean = simMean;
-    }
-
-    public String getInterproIds() {
-        return interproIds;
-    }
-
-    public void setInterproIds(String interproIds) {
-        this.interproIds = interproIds;
-    }
-
-    public String getGo() {
-        return go;
-    }
-
-    public void setGo(String go) {
-        this.go = go;
-    }
-
-    public String getGoNames() {
-        return goNames;
-    }
-
-    public void setGoNames(String goNames) {
-        this.goNames = goNames;
-    }
-
-    public String getEnzimeCodes() {
-        return enzimeCodes;
-    }
-
-    public void setEnzimeCodes(String enzimeCodes) {
-        this.enzimeCodes = enzimeCodes;
+    public void setFastaContent(String fastaContent) {
+        this.fastaContent = fastaContent;
     }
 }

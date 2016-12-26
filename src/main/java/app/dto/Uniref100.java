@@ -15,6 +15,8 @@ public class Uniref100 implements Serializable {
     Integer numberHits;
     String eValue;
     Double simMean;
+    String fastaDescription;
+    String fastaContent;
 
     public String getSeqName() {
         return seqName;
@@ -70,5 +72,21 @@ public class Uniref100 implements Serializable {
 
     public void setSimMean(Double simMean) {
         this.simMean = simMean;
+    }
+
+    public String getFastaDescription() {
+        return fastaDescription;
+    }
+
+    public void setFastaDescription(String fastaDescription) {
+        this.fastaDescription = fastaDescription;
+    }
+
+    public String getFastaContent() {
+        return fastaContent;
+    }
+
+    public void setFastaContent(String fastaContent) {
+        this.fastaContent = fastaContent;
     }
 }

@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="app.dto">
 
-    <class name="Trembl" table="trembl">
+    <class name="Trembl" table="trembls">
         <composite-id>
             <key-property name="seqName" column="seqName"></key-property>
             <key-property name="orfsPtns" column="orfs_ptns"></key-property>
@@ -16,6 +16,8 @@
         <property name="eValue" column="e_value"/>
         <property name="simMean" type="java.lang.Double" column="sim_mean"/>
         <property name="interproIds" type="text" column="interpro_ids"/>
+        <property name="fastaDescription" type="text" column="fastaDescription"/>
+        <property name="fastaContent" type="text" column="fastaContent"/>
     </class>
 
 </hibernate-mapping>

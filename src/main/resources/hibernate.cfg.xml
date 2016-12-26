@@ -33,6 +33,7 @@
         <mapping resource="UnirefNematoda.hbm.xml"></mapping>
         <mapping resource="Uniref100.hbm.xml"></mapping>
         <mapping resource="Trembl.hbm.xml"></mapping>
+        <mapping resource="Fasta.hbm.xml"></mapping>
 
     </session-factory>
 </hibernate-configuration>

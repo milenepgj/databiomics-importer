@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="app.dto">
+
+    <class name="Sequence" table="sequences">
+        <id name="seqName" column="seqname"/>
+        <property name="description" column="description"/>
+        <property name="length" type="integer" column="length"/>
+        <property name="numberHits" type="integer" column="numberhits"/>
+        <property name="eValue" column="e_value"/>
+        <property name="simMean" type="java.lang.Double" column="sim_mean"/>
+        <property name="interproIds" type="text" column="interpro_ids"/>
+    </class>
+
+</hibernate-mapping>

@@ -1,18 +1,12 @@
 package app.service;
 
 
-import app.dto.Sequence;
-import app.dto.Trembl;
-import app.dto.Uniref100;
-import app.dto.UnirefNematoda;
+import app.dto.*;
 import app.hibernate.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +97,18 @@ public class ImportDataBiomicDataService {
 
     }
 
+    private Fasta getFastaData(String seqName, String orfsPtns, String fastaDescription, String fastaContent){
+
+        Fasta fasta = new Fasta();
+        fasta.setSeqName(seqName);
+        fasta.setOrfsPtns(orfsPtns);
+        fasta.setFastaDescription(fastaDescription);
+        fasta.setFastaContent(fastaContent);
+
+        return fasta;
+
+    }
+
     public void importSequencesData(String type) {
 
         String arquivoCSV = "";
@@ -183,6 +189,112 @@ public class ImportDataBiomicDataService {
 
     }
 
+    public void importFastaData(String filesPath, String file) {
+
+        if (filesPath == "" || file == ""){
+            System.out.println("nothing to do");
+        }else{
+
+            BufferedReader br = null;
+            String linha = "";
+            String sequenceCharIdentity = ">";
+            List<Fasta> fastas = new ArrayList<Fasta>();
+            List<Fasta> fastasToSave = new ArrayList<Fasta>();
+            String seqName = "";
+            String orfsPtns = "";
+            String fastaDescription = "";
+            String fastaContent = "";
+            Fasta fasta = null;
+            int qtdLinhas = 0;
+            try {
+
+                br = new BufferedReader(new FileReader(filesPath + File.separator + file));
+                while ((linha = br.readLine()) != null) {
+
+                    qtdLinhas++;
+
+                    if (linha.contains(sequenceCharIdentity)){
+
+                        if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                            //Salva o fasta (para nematoda, uniref e trembl)
+                            fasta.setFastaContent(fastaContent);
+                            //fasta = (Fasta)save(fasta);
+                            fastasToSave.add(fasta);
+
+                            //fastas = saveFastaData(fasta, fastaContent, fastas);
+                        }
+
+                        fasta = getFastaIdentity(linha);
+
+                    }else{
+                        if (fastaContent != "") fastaContent += System.getProperty("line.separator");
+                        fastaContent += linha;
+                    }
+
+                }
+
+                if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                    //Salva o último fasta
+                    //fastas = saveFastaData(fasta, fastaContent, fastas);
+
+                    fasta.setFastaContent(fastaContent);
+                    //fasta = (Fasta)save(fasta);
+                    fastasToSave.add(fasta);
+                }
+
+                System.out.println("TOTAL FASTA ITEMS PARA SALVAR:" + fastasToSave.size());
+
+                for (int i=0; i<fastasToSave.size(); i++) {
+                    fasta = (Fasta)save(fastasToSave.get(i));
+                    fastas = saveFastaData(fastasToSave.get(i), fastaContent, fastas);
+                }
+
+                System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
+
+            } catch (FileNotFoundException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        System.out.println ("linhas: " + qtdLinhas);
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+    }
+
+    private List<Fasta> saveFastaData(Fasta fasta, String fastaContent, List<Fasta> fastas){
+
+        //Salva o fasta (para nematoda, uniref e trembl)
+/*        fasta.setFastaContent(fastaContent);
+        fasta = (Fasta)save(fasta);
+        fastas.add(fasta);*/
+
+        saveFastaDataByClassName("NEMATODA", fasta);
+        saveFastaDataByClassName("UNIREF100", fasta);
+        saveFastaDataByClassName("TREMBL", fasta);
+
+        return fastas;
+    }
+
+    private Fasta getFastaIdentity (String linha){
+        String[] sequenceIdentity = linha.split("\\|");
+        String seqName = sequenceIdentity[0].replaceAll(">","");
+        String orfsPtns = sequenceIdentity[1];
+        String fastaDescription = sequenceIdentity[2];
+
+        return getFastaData(seqName, orfsPtns, fastaDescription, "");
+    }
+
+
     private static Object save(Object object) {
 
         SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -197,5 +309,80 @@ public class ImportDataBiomicDataService {
 
         return object;
     }
+
+    private static Object getItemByFasta(String className, Fasta fasta) {
+
+        //https://www.mkyong.com/hibernate/different-between-session-get-and-session-load/
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+        String hql = "from table s where s.seqName = :seqName and s.orfsPtns = :orfsPtns";
+
+        switch (className){
+            case "NEMATODA":
+                //returnObject = (UnirefNematoda)session.get(UnirefNematoda.class, seqName);
+                hql = hql.replaceAll("table", "UnirefNematoda");
+
+                returnObject = session.createQuery(hql)
+                        .setProperties(fasta).uniqueResult();
+
+            case "UNIREF100":
+                //returnObject = (Uniref100)session.get(Uniref100.class, seqName);
+                hql = hql.replaceAll("table", "Uniref100");
+
+                returnObject = session.createQuery(hql)
+                        .setProperties(fasta).uniqueResult();
+
+            case "TREMBL":
+                //returnObject = (Trembl)session.get(Trembl.class, seqName);
+                hql = hql.replaceAll("table", "Trembl");
+
+                returnObject = session.createQuery(hql)
+                        .setProperties(fasta).uniqueResult();
+
+        }
+        session.close();
+        return returnObject;
+
+    }
+
+    private static Object saveFastaDataByClassName(String className, Fasta fasta) {
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+
+        switch (className){
+            case "NEMATODA":
+                UnirefNematoda unirefNematoda = (UnirefNematoda) getItemByFasta("NEMATODA", fasta);
+                if (unirefNematoda != null) {
+                    unirefNematoda.setFastaContent(fasta.getFastaContent());
+                    unirefNematoda.setFastaDescription(fasta.getFastaDescription());
+                }
+                save(unirefNematoda);
+            case "UNIREF100":
+                Uniref100 uniref100 = (Uniref100) getItemByFasta("UNIREF100", fasta);
+                if (uniref100 != null) {
+                    uniref100.setFastaContent(fasta.getFastaContent());
+                    uniref100.setFastaDescription(fasta.getFastaDescription());
+                }
+                save(uniref100);
+            case "TREMBL":
+                Trembl trembl = (Trembl) getItemByFasta("TREMBL", fasta);
+                if (trembl != null) {
+                    trembl.setFastaContent(fasta.getFastaContent());
+                    trembl.setFastaDescription(fasta.getFastaDescription());
+                }
+                save(trembl);
+        }
+        session.close();
+
+        return returnObject;
+
+    }
+
+
+
 
 }
