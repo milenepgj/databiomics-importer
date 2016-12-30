@@ -15,6 +15,8 @@ public class Sequence {
     String go;
     String goNames;
     String enzimeCodes;
+    String fastaDescription;
+    String fastaContent;
 
     public String getSeqName() {
         return seqName;
@@ -94,5 +96,21 @@ public class Sequence {
 
     public void setEnzimeCodes(String enzimeCodes) {
         this.enzimeCodes = enzimeCodes;
+    }
+
+    public String getFastaDescription() {
+        return fastaDescription;
+    }
+
+    public void setFastaDescription(String fastaDescription) {
+        this.fastaDescription = fastaDescription;
+    }
+
+    public String getFastaContent() {
+        return fastaContent;
+    }
+
+    public void setFastaContent(String fastaContent) {
+        this.fastaContent = fastaContent;
     }
 }

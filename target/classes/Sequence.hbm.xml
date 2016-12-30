@@ -13,6 +13,11 @@
         <property name="eValue" column="e_value"/>
         <property name="simMean" type="java.lang.Double" column="sim_mean"/>
         <property name="interproIds" type="text" column="interpro_ids"/>
+        <property name="go" type="text" column="go"/>
+        <property name="goNames" type="text" column="goNames"/>
+        <property name="enzimeCodes" type="text" column="enzimeCodes"/>
+        <property name="fastaDescription" type="text" column="fastaDescription"/>
+        <property name="fastaContent" type="text" column="fastaContent"/>
     </class>
 
 </hibernate-mapping>

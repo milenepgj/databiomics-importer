@@ -15,10 +15,10 @@ public class ImportDataBiomicDataService {
     public static void main(String[] args) {
 
         ImportDataBiomicDataService obj = new ImportDataBiomicDataService();
-        //obj.importSequencesData("NCBI");
-        obj.importSequencesData("NEMATODA");
-        obj.importSequencesData("UNIREF100");
-        obj.importSequencesData("TREMBL");
+        obj.importSequencesData("NCBI", "/home/milene.guimaraes/Dropbox/Planilhas AngiostrongylusDB", "Tabela_Anotacao_Angiostrongylus_NCBI.txt");
+        //obj.importSequencesData("NEMATODA");
+        //obj.importSequencesData("UNIREF100");
+        //obj.importSequencesData("TREMBL");
 
     }
 
@@ -120,24 +120,9 @@ public class ImportDataBiomicDataService {
 
     }
 
-    public void importSequencesData(String type) {
+    public void importSequencesData(String type, String path, String file) {
 
-        String arquivoCSV = "";
-
-        switch (type){
-            case "NCBI":
-                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_NCBI.txt";
-                break;
-            case "NEMATODA":
-                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Nematoda.txt";
-                break;
-            case "UNIREF100":
-                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Uniref100.txt";
-                break;
-            case "TREMBL":
-                arquivoCSV = "C:\\Users\\milen_000\\Documents\\_development\\databiomics-importer\\Tabela_Anotacao_Angiostrongylus_Trembl.txt";
-                break;
-        }
+        String arquivoCSV = path + File.separator + file;
 
         if (arquivoCSV == ""){
             System.out.println("nothing to do");
@@ -285,16 +270,49 @@ public class ImportDataBiomicDataService {
 
     }
 
+    private MRnaFasta saveMRnaFastaData(MRnaFasta fasta){
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+
+        Sequence sequence = (Sequence) getItemByMRnaFasta(fasta);
+        if (sequence != null) {
+            sequence.setFastaContent(fasta.getFastaContent());
+            sequence.setFastaDescription(fasta.getFastaDescription());
+        }
+        returnObject = save(sequence);
+
+        session.close();
+
+        return fasta;
+    }
+
+    private static Object getItemByMRnaFasta(MRnaFasta fasta) {
+
+        //https://www.mkyong.com/hibernate/different-between-session-get-and-session-load/
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+        String hql = "from table s where s.seqName = :seqName";
+
+        hql = hql.replaceAll("table", "Sequence");
+
+        returnObject = session.createQuery(hql)
+                .setProperties(fasta).uniqueResult();
+
+        session.close();
+
+        return returnObject;
+
+    }
+
     private List<Fasta> saveFastaData(Fasta fasta, String fastaContent, List<Fasta> fastas){
 
-        //Salva o fasta (para nematoda, uniref e trembl)
-/*        fasta.setFastaContent(fastaContent);
-        fasta = (Fasta)save(fasta);
-        fastas.add(fasta);*/
-
-        saveFastaDataByClassName("NEMATODA", fasta);
         saveFastaDataByClassName("UNIREF100", fasta);
-        saveFastaDataByClassName("TREMBL", fasta);
+        //saveFastaDataByClassName("NEMATODA", fasta);
+        //saveFastaDataByClassName("TREMBL", fasta);
 
         return fastas;
     }
@@ -342,21 +360,18 @@ public class ImportDataBiomicDataService {
 
         switch (className){
             case "NEMATODA":
-                //returnObject = (UnirefNematoda)session.get(UnirefNematoda.class, seqName);
                 hql = hql.replaceAll("table", "UnirefNematoda");
 
                 returnObject = session.createQuery(hql)
                         .setProperties(fasta).uniqueResult();
 
             case "UNIREF100":
-                //returnObject = (Uniref100)session.get(Uniref100.class, seqName);
                 hql = hql.replaceAll("table", "Uniref100");
 
                 returnObject = session.createQuery(hql)
                         .setProperties(fasta).uniqueResult();
 
             case "TREMBL":
-                //returnObject = (Trembl)session.get(Trembl.class, seqName);
                 hql = hql.replaceAll("table", "Trembl");
 
                 returnObject = session.createQuery(hql)
@@ -381,21 +396,21 @@ public class ImportDataBiomicDataService {
                     unirefNematoda.setFastaContent(fasta.getFastaContent());
                     unirefNematoda.setFastaDescription(fasta.getFastaDescription());
                 }
-                save(unirefNematoda);
+                returnObject = save(unirefNematoda);
             case "UNIREF100":
                 Uniref100 uniref100 = (Uniref100) getItemByFasta("UNIREF100", fasta);
                 if (uniref100 != null) {
                     uniref100.setFastaContent(fasta.getFastaContent());
                     uniref100.setFastaDescription(fasta.getFastaDescription());
                 }
-                save(uniref100);
+                returnObject = save(uniref100);
             case "TREMBL":
                 Trembl trembl = (Trembl) getItemByFasta("TREMBL", fasta);
                 if (trembl != null) {
                     trembl.setFastaContent(fasta.getFastaContent());
                     trembl.setFastaDescription(fasta.getFastaDescription());
                 }
-                save(trembl);
+                returnObject = save(trembl);
         }
         session.close();
 
@@ -463,7 +478,7 @@ public class ImportDataBiomicDataService {
 
                 for (int i=0; i<fastasToSave.size(); i++) {
                     fasta = (MRnaFasta)save(fastasToSave.get(i));
-                    fastas = saveFastaData(fastasToSave.get(i), fastaContent.toString(), fastas);
+                    fastas.add(saveMRnaFastaData(fastasToSave.get(i)));
                 }
 
                 System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
