@@ -61,7 +61,7 @@ public class ImportMRnaFastaApplication implements CommandLineRunner {
 
             if (help) {
                 System.out.println("\nimportMRnaFasta-0.1.0: A process to import fasta data\n");
-                System.out.println("Example: java -jar importMRnaFasta-0.1.0.jar -f Angiostrongylys_proteome_Uniref100_annotation.fasta -p C:\\files\\fastas\n");
+                System.out.println("Example: java -jar importMRnaFasta-0.1.0.jar -f Angiostrongylus_mRNA_annotation.fasta.fasta -p /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/fastas\n");
                 System.out.println("Arguments:\n");
                 System.out.println("-f: File fasta to import");
                 System.out.println("-p: Path of fasta files");

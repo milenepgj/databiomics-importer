@@ -34,7 +34,6 @@ import org.hibernate.classic.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
@@ -60,10 +59,11 @@ public class Application implements CommandLineRunner {
     private String fileName;
     private boolean help = false;
 
+/*COMENTADO PARA CRIAR O JAR
     public static void main(String args[]) {
 
         SpringApplication.run(Application.class, args);
-    }
+    }*/
 
     private static Employee save(Employee employee) {
         SessionFactory sf = HibernateUtil.getSessionFactory();

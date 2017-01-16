@@ -10,7 +10,6 @@ import app.service.ImportDataBiomicDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
@@ -34,11 +33,13 @@ public class ImportBlastDataApplication implements CommandLineRunner {
     private String fileName;
     private boolean help = false;
 
+    /*COMENTADO PARA CRIAR O JAR
+
     public static void main(String args[]) {
 
         SpringApplication.run(ImportBlastDataApplication.class, args);
     }
-
+*/
     private boolean argumentsValidation(String... args){
 
         if (args == null || args.length == 0){

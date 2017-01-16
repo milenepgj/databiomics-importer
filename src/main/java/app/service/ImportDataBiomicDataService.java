@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ImportDataBiomicDataService {
 
+    /* COMENTADO PARA CRIAR O JAR
     public static void main(String[] args) {
 
         ImportDataBiomicDataService obj = new ImportDataBiomicDataService();
@@ -20,7 +21,7 @@ public class ImportDataBiomicDataService {
         //obj.importSequencesData("UNIREF100");
         //obj.importSequencesData("TREMBL");
 
-    }
+    }*/
 
     private Sequence getSequenceData(String[] line){
 
@@ -308,6 +309,25 @@ public class ImportDataBiomicDataService {
 
     }
 
+    private List<MRnaFasta> saveMRnaFastaData(MRnaFasta mRnafasta, String fastaContent, List<MRnaFasta> fastas){
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+
+        Sequence sequence = (Sequence) getItemByMRnaFasta(mRnafasta);
+        if (sequence != null) {
+            sequence.setFastaContent(mRnafasta.getFastaContent());
+            sequence.setFastaDescription(mRnafasta.getFastaDescription());
+        }
+        returnObject = save(sequence);
+        session.close();
+
+        fastas.add((MRnaFasta)returnObject);
+
+        return fastas;
+    }
+
     private List<Fasta> saveFastaData(Fasta fasta, String fastaContent, List<Fasta> fastas){
 
         saveFastaDataByClassName("UNIREF100", fasta);
@@ -327,9 +347,11 @@ public class ImportDataBiomicDataService {
     }
 
     private MRnaFasta getMRnaFastaIdentity (String linha) {
+        String fastaDescription = "";
         String[] sequenceIdentity = linha.split("\\|");
         String seqName = sequenceIdentity[0].replaceAll(">", "");
-        String fastaDescription = sequenceIdentity[1];
+
+        if (sequenceIdentity.length > 1) fastaDescription = sequenceIdentity[1];
 
         return getMRnaFastaData(seqName, fastaDescription, "");
     }
@@ -373,6 +395,13 @@ public class ImportDataBiomicDataService {
 
             case "TREMBL":
                 hql = hql.replaceAll("table", "Trembl");
+
+                returnObject = session.createQuery(hql)
+                        .setProperties(fasta).uniqueResult();
+
+            case "SEQUENCE":
+                hql = "from table s where s.seqName = :seqName";
+                hql = hql.replaceAll("table", "Sequence");
 
                 returnObject = session.createQuery(hql)
                         .setProperties(fasta).uniqueResult();
@@ -449,8 +478,7 @@ public class ImportDataBiomicDataService {
                             fasta.setFastaContent(fastaContent.toString());
                             //fasta = (Fasta)save(fasta);
                             fastasToSave.add(fasta);
-
-                            //fastas = saveFastaData(fasta, fastaContent, fastas);
+                            fastaContent = null;
                         }
 
                         fasta = getMRnaFastaIdentity(linha);
@@ -458,8 +486,10 @@ public class ImportDataBiomicDataService {
                     }else{
                         if (fastaContent != null) {
                             fastaContent.append(System.getProperty("line.separator"));
+                        }else{
+                            fastaContent = new StringBuilder();
                         }
-                        fastaContent = new StringBuilder();
+
                         fastaContent.append(linha);
                     }
 
@@ -467,8 +497,6 @@ public class ImportDataBiomicDataService {
 
                 if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
                     //Salva o último fasta
-                    //fastas = saveFastaData(fasta, fastaContent, fastas);
-
                     fasta.setFastaContent(fastaContent.toString());
                     //fasta = (Fasta)save(fasta);
                     fastasToSave.add(fasta);
