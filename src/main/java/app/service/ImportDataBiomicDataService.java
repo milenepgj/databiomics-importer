@@ -217,6 +217,7 @@ public class ImportDataBiomicDataService {
                             fasta.setFastaContent(fastaContent.toString());
                             //fasta = (Fasta)save(fasta);
                             fastasToSave.add(fasta);
+                            fastaContent = null;
 
                             //fastas = saveFastaData(fasta, fastaContent, fastas);
                         }
@@ -226,8 +227,10 @@ public class ImportDataBiomicDataService {
                     }else{
                         if (fastaContent != null) {
                             fastaContent.append(System.getProperty("line.separator"));
+                        }else{
+                            fastaContent = new StringBuilder();
                         }
-                        fastaContent = new StringBuilder();
+
                         fastaContent.append(linha);
                     }
 
@@ -395,13 +398,6 @@ public class ImportDataBiomicDataService {
 
             case "TREMBL":
                 hql = hql.replaceAll("table", "Trembl");
-
-                returnObject = session.createQuery(hql)
-                        .setProperties(fasta).uniqueResult();
-
-            case "SEQUENCE":
-                hql = "from table s where s.seqName = :seqName";
-                hql = hql.replaceAll("table", "Sequence");
 
                 returnObject = session.createQuery(hql)
                         .setProperties(fasta).uniqueResult();

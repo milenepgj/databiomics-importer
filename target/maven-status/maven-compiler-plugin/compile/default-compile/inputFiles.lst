@@ -9,7 +9,6 @@
 /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/dto/GoData.java
 /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/service/ImportDataBiomicDataService.java
 /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/ImportFastaApplication.java
-/home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/ImportData.java
 /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/ImportBlastDataApplication.java
-/home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/dto/Sequence.java
 /home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/dto/Fasta.java
+/home/milene.guimaraes/Documents/Pessoal/databiomics-importer/src/main/java/app/dto/Sequence.java
