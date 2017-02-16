@@ -3,11 +3,16 @@ package app.service;
 
 import app.dto.*;
 import app.hibernate.HibernateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ImportDataBiomicDataService {
@@ -528,6 +533,89 @@ public class ImportDataBiomicDataService {
     }
 
 
+    public void importIntragenomicData(String filesPath, String file) {
+
+        if (filesPath == "" || file == ""){
+            System.out.println("nothing to do");
+        }else{
+
+            BufferedReader br = null;
+            String linha = "";
+            String sequenceCharIdentity = ">";
+            List<Intragenomic> fastas = new ArrayList<Intragenomic>();
+            List<Intragenomic> fastasToSave = new ArrayList<Intragenomic>();
+            String seqName = "";
+            String orfsPtns = "";
+            String fastaDescription = "";
+            StringBuilder fastaContent = null;
+            MRnaFasta fasta = null;
+            int qtdLinhas = 0;
+            try {
+
+                br = new BufferedReader(new FileReader(filesPath + File.separator + file));
+                while ((linha = br.readLine()) != null) {
+
+                    qtdLinhas++;
+
+                    if (linha.contains(sequenceCharIdentity)){
+
+                        if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                            //Salva o fasta (para nematoda, uniref e trembl)
+                            fasta.setFastaContent(fastaContent.toString());
+                            //fasta = (Fasta)save(fasta);
+                            fastasToSave.add(fasta);
+                            fastaContent = null;
+                        }
+
+                        fasta = getMRnaFastaIdentity(linha);
+
+                    }else{
+                        if (fastaContent != null) {
+                            fastaContent.append(System.getProperty("line.separator"));
+                        }else{
+                            fastaContent = new StringBuilder();
+                        }
+
+                        fastaContent.append(linha);
+                    }
+
+                }
+
+                if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
+                    //Salva o último fasta
+                    fasta.setFastaContent(fastaContent.toString());
+                    //fasta = (Fasta)save(fasta);
+                    fastasToSave.add(fasta);
+                }
+
+                System.out.println("TOTAL FASTA ITEMS PARA SALVAR:" + fastasToSave.size());
+
+                for (int i=0; i<fastasToSave.size(); i++) {
+                    fasta = (MRnaFasta)save(fastasToSave.get(i));
+                    fastas.add(saveMRnaFastaData(fastasToSave.get(i)));
+                }
+
+                System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
+
+            } catch (FileNotFoundException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println ("linhas: " + qtdLinhas);
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        System.out.println ("linhas: " + qtdLinhas);
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+    }
 
 
 }

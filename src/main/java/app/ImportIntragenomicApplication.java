@@ -10,6 +10,7 @@ import app.service.ImportDataBiomicDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
@@ -18,9 +19,9 @@ import java.util.List;
 
 @SpringBootApplication
 @PropertySource("application.properties")
-public class ImportFastaApplication implements CommandLineRunner {
+public class ImportIntragenomicApplication implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(ImportFastaApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(ImportIntragenomicApplication.class);
     private List<String> resultContaisInBoth = new ArrayList<String>();
     private List<String> resultOnlyInC = new ArrayList<String>();
     private List<String> resultOnlyInF = new ArrayList<String>();
@@ -32,12 +33,10 @@ public class ImportFastaApplication implements CommandLineRunner {
     private String fileName;
     private boolean help = false;
 
-/*
-COMENTADO PARA CRIAR O JAR
     public static void main(String args[]) {
 
-        SpringApplication.run(ImportFastaApplication.class, args);
-    }*/
+        SpringApplication.run(ImportIntragenomicApplication.class, args);
+    }
 
 
     private boolean argumentsValidation(String... args){
@@ -62,8 +61,8 @@ COMENTADO PARA CRIAR O JAR
             }
 
             if (help) {
-                System.out.println("\nimportFasta-0.1.0: A process to import fasta data\n");
-                System.out.println("Example: java -jar importFasta-0.1.0.jar -f Angiostrongylys_proteome_Uniref100_annotation.fasta -p C:\\files\\fastas\n");
+                System.out.println("\nimportIntragenomicData-0.1.0: A process to import fasta data\n");
+                System.out.println("Example: java -jar importIntragenomicData-0.1.0.jar -f Angiostrongylus_analogos_intragenomicos_tpm_25-05.xlsx -p C:\\files\\xls\n");
                 System.out.println("Arguments:\n");
                 System.out.println("-f: File fasta to import");
                 System.out.println("-p: Path of fasta files");
@@ -82,19 +81,19 @@ COMENTADO PARA CRIAR O JAR
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("Validating importFasta-0.1.0 arguments...");
+        System.out.println("Validating importIntragenomicData-0.1.0 arguments...");
 
         if (argumentsValidation(args)) {
 
-            System.out.println("Starting importFasta-0.1.0 process...");
+            System.out.println("Starting importIntragenomicData-0.1.0 process...");
             System.out.println("path: " + path);
             System.out.println("file: " + file);
 
             ImportDataBiomicDataService service = new ImportDataBiomicDataService();
 
-            service.importFastaData(path, file);
+            service.importIntragenomicData(path, file);
 
-            System.out.println("importFasta-0.1.0 process finished. See the file '" + fileName + "' created.");
+            System.out.println("importIntragenomicData-0.1.0 process finished. See the file '" + fileName + "' created.");
         }
 
     }
