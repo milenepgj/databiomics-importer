@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="app.dto">
+
+    <class name="Intragenomic" table="intragenomics">
+        <composite-id>
+            <key-property name="seqName" column="seqName"></key-property>
+            <key-property name="orfsPtns" column="orfs_ptns"></key-property>
+        </composite-id>
+        <property name="ec_number" type="text" column="ec_number"/>
+        <property name="tpm" type="text" column="tpm"/>
+        <property name="fpkm" type="text" column="fpkm"/>
+        <property name="enzymeDescription" type="text" column="enzymeDescription"/>
+        <property name="uniref100" type="text" column="uniref100"/>
+        <property name="length" type="java.lang.Double" column="length"/>
+        <property name="numberHits" type="java.lang.Double" column="numberhits"/>
+        <property name="eValue" column="e_value"/>
+        <property name="simMean" type="java.lang.Double" column="sim_mean"/>
+        <property name="fold" type="text" column="fold"/>
+        <property name="superfamily" type="text" column="superfamily"/>
+        <property name="literature_function" type="text" column="literature_function"/>
+    </class>
+
+</hibernate-mapping>

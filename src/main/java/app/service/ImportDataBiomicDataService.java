@@ -3,12 +3,15 @@ package app.service;
 
 import app.dto.*;
 import app.hibernate.HibernateUtil;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.jopendocument.dom.spreadsheet.Sheet;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -123,6 +126,32 @@ public class ImportDataBiomicDataService {
         fasta.setFastaContent(fastaContent);
 
         return fasta;
+
+    }
+
+    private Intragenomic getIntragenomicData(String[] line){
+
+        Intragenomic intragenomic = new Intragenomic();
+        intragenomic.setEc_number(line[0].replaceAll("'",""));
+
+        String[] seqOrf = line[1].split("\\|");
+
+        intragenomic.setSeqName(seqOrf[0]);
+        intragenomic.setOrfsPtns(seqOrf[1]);
+
+        intragenomic.setTpm(line[2].replaceAll("'",""));
+        intragenomic.setFpkm(line[3].replaceAll("'",""));
+        intragenomic.setEnzymeDescription(line[4].replaceAll("'",""));
+        intragenomic.setUniref100(line[5].replaceAll("'",""));
+        intragenomic.setLength(Double.parseDouble(line[6]==null?"0":line[6].replaceAll("'","")));
+        intragenomic.setNumberHits(Double.parseDouble(line[7]==null?"0":line[7].replaceAll("'","")));
+        intragenomic.seteValue(line[8].replaceAll("'",""));
+        intragenomic.setSimMean(Double.parseDouble(line[9]==null?"0":line[9].replaceAll("%","").replaceAll("'","")));
+        intragenomic.setFold(line[10].replaceAll("'",""));
+        intragenomic.setSuperfamily(line[11].replaceAll("'",""));
+        intragenomic.setLiterature_function(line[12].replaceAll("'",""));
+
+        return intragenomic;
 
     }
 
@@ -533,82 +562,167 @@ public class ImportDataBiomicDataService {
     }
 
 
-    public void importIntragenomicData(String filesPath, String file) {
 
-        if (filesPath == "" || file == ""){
+    public void importIntragenomicDataCSV(String filesPath, String file) throws IOException {
+        String arquivoCSV = filesPath + File.separator + file;
+
+        if (arquivoCSV == ""){
+            System.out.println("nothing to do");
+        }else {
+
+            try {
+                File ods = new File(arquivoCSV);
+                Sheet sheet = SpreadSheet.createFromFile(ods).getSheet("Sheet1");
+                int line = 0;
+                while (sheet.getValueAt(0, line) != null) {
+                    sheet.getCellAt(0, line);
+                    System.out.println(sheet.getCellAt(0, line));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void importIntragenomicData(String filesPath, String file) throws IOException, InvalidFormatException {
+
+        String arquivoCSV = filesPath + File.separator + file;
+
+        if (arquivoCSV == ""){
+            System.out.println("nothing to do");
+        }else {
+
+            File ods = new File(arquivoCSV);
+            XSSFWorkbook book = new XSSFWorkbook(ods);
+            XSSFSheet sheet = book.getSheetAt(0);
+            Iterator<Row> itr = sheet.iterator();
+            List<Intragenomic> intragenomics = new ArrayList<Intragenomic>();
+
+            // Iterating over Excel file in Java
+            while (itr.hasNext()) {
+
+                Row row = itr.next();
+
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                for (int indCell = 0; indCell < 14; indCell++){
+
+                    Cell cell = cellIterator.next();
+
+                    String cellValue = cell.getStringCellValue();
+
+                    if (cellValue.contains("EC") || cellValue.contains("S2")){
+                        break;
+
+                    }else{
+
+                        System.out.print(cellValue + "\t");
+
+                        Intragenomic intragenomic = new Intragenomic();
+
+                        intragenomic.setEc_number(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+
+                        String[] seqOrf = cellValue.split("\\|");
+
+                        intragenomic.setSeqName(seqOrf[0]);
+                        intragenomic.setOrfsPtns(seqOrf[1]);
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setTpm(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setFpkm(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setEnzymeDescription(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setUniref100(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        double cellDoubleValue = cell.getNumericCellValue();
+                        intragenomic.setLength(cellDoubleValue);
+
+                        cell = cellIterator.next();
+                        cellDoubleValue = cell.getNumericCellValue();
+                        intragenomic.setNumberHits(cellDoubleValue);
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.seteValue(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setSimMean(Double.parseDouble(cellValue==null?"0":cellValue.replaceAll("%","").replaceAll("'","")));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setFold(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setSuperfamily(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intragenomic.setLiterature_function(cellValue.replaceAll("'",""));
+
+                        intragenomics.add((Intragenomic)save(intragenomic));
+                    }
+
+                }
+
+                System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
+            }
+        }
+    }
+
+
+    public void importIntragenomicDataCsv(String filesPath, String file) {
+
+        String arquivoCSV = filesPath + File.separator + file;
+
+        if (arquivoCSV == ""){
             System.out.println("nothing to do");
         }else{
 
             BufferedReader br = null;
             String linha = "";
-            String sequenceCharIdentity = ">";
-            List<Intragenomic> fastas = new ArrayList<Intragenomic>();
-            List<Intragenomic> fastasToSave = new ArrayList<Intragenomic>();
-            String seqName = "";
-            String orfsPtns = "";
-            String fastaDescription = "";
-            StringBuilder fastaContent = null;
-            MRnaFasta fasta = null;
-            int qtdLinhas = 0;
+            String csvDivisor = "\\t";
+            List<Intragenomic> intragenomics = new ArrayList<Intragenomic>();
+            boolean header = true;
+
             try {
 
-                br = new BufferedReader(new FileReader(filesPath + File.separator + file));
+                br = new BufferedReader(new FileReader(arquivoCSV));
                 while ((linha = br.readLine()) != null) {
-
-                    qtdLinhas++;
-
-                    if (linha.contains(sequenceCharIdentity)){
-
-                        if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
-                            //Salva o fasta (para nematoda, uniref e trembl)
-                            fasta.setFastaContent(fastaContent.toString());
-                            //fasta = (Fasta)save(fasta);
-                            fastasToSave.add(fasta);
-                            fastaContent = null;
-                        }
-
-                        fasta = getMRnaFastaIdentity(linha);
-
+                    String[] line = linha.split(csvDivisor);
+                    if (line[0].contains("EC")){
+                        header = false;
                     }else{
-                        if (fastaContent != null) {
-                            fastaContent.append(System.getProperty("line.separator"));
-                        }else{
-                            fastaContent = new StringBuilder();
-                        }
-
-                        fastaContent.append(linha);
+                        intragenomics.add((Intragenomic)save(getIntragenomicData(line)));
                     }
-
                 }
 
-                if (fasta != null && !fasta.getSeqName().equals("") && !fastaContent.equals("")){
-                    //Salva o último fasta
-                    fasta.setFastaContent(fastaContent.toString());
-                    //fasta = (Fasta)save(fasta);
-                    fastasToSave.add(fasta);
-                }
-
-                System.out.println("TOTAL FASTA ITEMS PARA SALVAR:" + fastasToSave.size());
-
-                for (int i=0; i<fastasToSave.size(); i++) {
-                    fasta = (MRnaFasta)save(fastasToSave.get(i));
-                    fastas.add(saveMRnaFastaData(fastasToSave.get(i)));
-                }
-
-                System.out.println("TOTAL FASTA ITEMS SALVOS:" + fastas.size());
+                System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
 
             } catch (FileNotFoundException e) {
-                System.out.println ("linhas: " + qtdLinhas);
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println ("linhas: " + qtdLinhas);
                 e.printStackTrace();
             } finally {
                 if (br != null) {
                     try {
                         br.close();
                     } catch (IOException e) {
-                        System.out.println ("linhas: " + qtdLinhas);
                         e.printStackTrace();
                     }
                 }
