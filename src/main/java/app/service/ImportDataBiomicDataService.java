@@ -10,13 +10,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.jopendocument.dom.spreadsheet.Sheet;
-import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ImportDataBiomicDataService {
 
@@ -562,38 +561,15 @@ public class ImportDataBiomicDataService {
     }
 
 
-
-    public void importIntragenomicDataCSV(String filesPath, String file) throws IOException {
-        String arquivoCSV = filesPath + File.separator + file;
-
-        if (arquivoCSV == ""){
-            System.out.println("nothing to do");
-        }else {
-
-            try {
-                File ods = new File(arquivoCSV);
-                Sheet sheet = SpreadSheet.createFromFile(ods).getSheet("Sheet1");
-                int line = 0;
-                while (sheet.getValueAt(0, line) != null) {
-                    sheet.getCellAt(0, line);
-                    System.out.println(sheet.getCellAt(0, line));
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void importIntragenomicData(String filesPath, String file) throws IOException, InvalidFormatException {
 
-        String arquivoCSV = filesPath + File.separator + file;
+        String arquivo = filesPath + File.separator + file;
 
-        if (arquivoCSV == ""){
+        if (arquivo == ""){
             System.out.println("nothing to do");
         }else {
 
-            File ods = new File(arquivoCSV);
+            File ods = new File(arquivo);
             XSSFWorkbook book = new XSSFWorkbook(ods);
             XSSFSheet sheet = book.getSheetAt(0);
             Iterator<Row> itr = sheet.iterator();
@@ -606,16 +582,12 @@ public class ImportDataBiomicDataService {
 
                 Iterator<Cell> cellIterator = row.cellIterator();
 
-                for (int indCell = 0; indCell < 14; indCell++){
-
+                try{
                     Cell cell = cellIterator.next();
 
                     String cellValue = cell.getStringCellValue();
 
-                    if (cellValue.contains("EC") || cellValue.contains("S2")){
-                        break;
-
-                    }else{
+                    if (!cellValue.contains("EC")){
 
                         System.out.print(cellValue + "\t");
 
@@ -660,8 +632,16 @@ public class ImportDataBiomicDataService {
                         intragenomic.seteValue(cellValue.replaceAll("'",""));
 
                         cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
-                        intragenomic.setSimMean(Double.parseDouble(cellValue==null?"0":cellValue.replaceAll("%","").replaceAll("'","")));
+
+                        try{
+                            cellValue = cell.getStringCellValue();
+                            if (cellValue!=null && cellValue != ""){
+                                intragenomic.setSimMean(Double.parseDouble(cellValue.replaceAll("%","").replaceAll("'","")));
+                            }
+                        }catch (IllegalStateException e){
+                            cellDoubleValue = cell.getNumericCellValue();
+                            intragenomic.setSimMean(cellDoubleValue);
+                        }
 
                         cell = cellIterator.next();
                         cellValue = cell.getStringCellValue();
@@ -678,15 +658,17 @@ public class ImportDataBiomicDataService {
                         intragenomics.add((Intragenomic)save(intragenomic));
                     }
 
+                    System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
+                }catch(NoSuchElementException e){
+                    System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
                 }
 
-                System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
             }
         }
     }
 
 
-    public void importIntragenomicDataCsv(String filesPath, String file) {
+    /*public void importIntragenomicDataCsv(String filesPath, String file) {
 
         String arquivoCSV = filesPath + File.separator + file;
 
@@ -729,7 +711,7 @@ public class ImportDataBiomicDataService {
             }
         }
 
-    }
+    }*/
 
 
 }
