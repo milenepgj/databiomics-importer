@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="app.dto">
+
+    <class name="Intergenomic" table="intergenomics">
+        <composite-id>
+            <key-property name="seqName" column="seqName"></key-property>
+            <key-property name="orfsPtns" column="orfs_ptns"></key-property>
+        </composite-id>
+        <property name="ec_number" type="text" column="ec_number"/>
+        <property name="enzymeDescription" type="text" column="enzymeDescription"/>
+        <property name="organism" type="text" column="organism"/>
+        <property name="uniprotId" type="text" column="uniprotId"/>
+        <property name="pdbBestHit" type="text" column="pdbBestHit"/>
+        <property name="pdbIdentity" type="text" column="pdbIdentity"/>
+        <property name="foldScopId" type="text" column="fold"/>
+        <property name="superFamily" type="text" column="superfamily"/>
+        <property name="literature_function" type="text" column="literature_function"/>
+    </class>
+
+</hibernate-mapping>
+

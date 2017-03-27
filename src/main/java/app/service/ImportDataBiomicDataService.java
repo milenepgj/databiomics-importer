@@ -668,50 +668,93 @@ public class ImportDataBiomicDataService {
     }
 
 
-    /*public void importIntragenomicDataCsv(String filesPath, String file) {
+    public void importIntergenomicData(String filesPath, String file) throws IOException, InvalidFormatException {
 
-        String arquivoCSV = filesPath + File.separator + file;
+        String arquivo = filesPath + File.separator + file;
 
-        if (arquivoCSV == ""){
+        if (arquivo == ""){
             System.out.println("nothing to do");
-        }else{
+        }else {
 
-            BufferedReader br = null;
-            String linha = "";
-            String csvDivisor = "\\t";
-            List<Intragenomic> intragenomics = new ArrayList<Intragenomic>();
-            boolean header = true;
+            File ods = new File(arquivo);
+            XSSFWorkbook book = new XSSFWorkbook(ods);
+            XSSFSheet sheet = book.getSheetAt(0);
+            Iterator<Row> itr = sheet.iterator();
+            List<Intergenomic> intragenomics = new ArrayList<Intergenomic>();
 
-            try {
+            // Iterating over Excel file in Java
+            while (itr.hasNext()) {
 
-                br = new BufferedReader(new FileReader(arquivoCSV));
-                while ((linha = br.readLine()) != null) {
-                    String[] line = linha.split(csvDivisor);
-                    if (line[0].contains("EC")){
-                        header = false;
-                    }else{
-                        intragenomics.add((Intragenomic)save(getIntragenomicData(line)));
+                Row row = itr.next();
+
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                try{
+                    Cell cell = cellIterator.next();
+
+                    String cellValue = cell.getStringCellValue();
+
+                    if (!cellValue.contains("EC") && !cellValue.contains("Tabela")){
+
+                        System.out.print(cellValue + "\t");
+
+                        Intergenomic intergenomic = new Intergenomic();
+
+                        intergenomic.setEc_number(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setEnzymeDescription(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setOrganism(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+
+                        String[] seqOrf = cellValue.split("\\|");
+
+                        intergenomic.setSeqName(seqOrf[0]);
+                        intergenomic.setOrfsPtns(seqOrf[1].length() > 1?seqOrf[1]:"");
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setUniprotId(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setPdbBestHit(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setPdbIdentity(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setFoldScopId(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setSuperFamily(cellValue.replaceAll("'",""));
+
+                        cell = cellIterator.next();
+                        cellValue = cell.getStringCellValue();
+                        intergenomic.setLiterature_function(cellValue.replaceAll("'",""));
+
+                        intragenomics.add((Intergenomic)save(intergenomic));
                     }
+
+                    System.out.println("TOTAL ITEMS ON INTERGENOMIC TABLE:" + intragenomics.size());
+                }catch(NoSuchElementException e){
+                    System.out.println("TOTAL ITEMS ON INTERGENOMIC TABLE:" + intragenomics.size());
                 }
 
-                System.out.println("TOTAL ITEMS ON INTRAGENOMIC TABLE:" + intragenomics.size());
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
+    }
 
-    }*/
+
 
 
 }

@@ -1,4 +1,4 @@
-package app;
+package app.service;
 
 /**
 
@@ -6,7 +6,6 @@ package app;
 
  */
 
-import app.service.ImportDataBiomicDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,9 +18,9 @@ import java.util.List;
 
 @SpringBootApplication
 @PropertySource("application.properties")
-public class ImportIntragenomicApplication implements CommandLineRunner {
+public class ImportIntergenomicApplication implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(ImportIntragenomicApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(ImportIntergenomicApplication.class);
     private List<String> resultContaisInBoth = new ArrayList<String>();
     private List<String> resultOnlyInC = new ArrayList<String>();
     private List<String> resultOnlyInF = new ArrayList<String>();
@@ -35,7 +34,7 @@ public class ImportIntragenomicApplication implements CommandLineRunner {
 
     public static void main(String args[]) {
 
-        SpringApplication.run(ImportIntragenomicApplication.class, args);
+        SpringApplication.run(ImportIntergenomicApplication.class, args);
     }
 
 
@@ -61,11 +60,11 @@ public class ImportIntragenomicApplication implements CommandLineRunner {
             }
 
             if (help) {
-                System.out.println("\nimportIntragenomicData-0.1.0: A process to import intragenomic data\n");
-                System.out.println("Example: java -jar importIntragenomicData-0.1.0.jar -f Angiostrongylus_analogos_intragenomicos_tpm_25-05.xlsx -p C:\\files\\xls\n");
+                System.out.println("\nimportIntergenomicApplication-0.1.0: A process to import intergenomic data\n");
+                System.out.println("Example: java -jar importIntergenomicApplication-0.1.0.jar -f Lista_drug_targets_AngioDB.xlsx -p C:\\files\\xls\n");
                 System.out.println("Arguments:\n");
-                System.out.println("-f: File fasta to import");
-                System.out.println("-p: Path of fasta files");
+                System.out.println("-f: File to import");
+                System.out.println("-p: Path of files");
                 System.out.println("-help: Show the arguments");
             } else if (path == null) {
                 System.out.println("Please inform the path (put the -p argument).");
@@ -81,19 +80,19 @@ public class ImportIntragenomicApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("Validating importIntragenomicData-0.1.0 arguments...");
+        System.out.println("Validating importIntergenomicApplication-0.1.0 arguments...");
 
         if (argumentsValidation(args)) {
 
-            System.out.println("Starting importIntragenomicData-0.1.0 process...");
+            System.out.println("Starting importIntergenomicApplication-0.1.0 process...");
             System.out.println("path: " + path);
             System.out.println("file: " + file);
 
             ImportDataBiomicDataService service = new ImportDataBiomicDataService();
 
-            service.importIntragenomicData(path, file);
+            service.importIntergenomicData(path, file);
 
-            System.out.println("importIntragenomicData-0.1.0 process finished. See the file '" + fileName + "' created.");
+            System.out.println("importIntergenomicApplication-0.1.0 process finished. See the file '" + fileName + "' created.");
         }
 
     }

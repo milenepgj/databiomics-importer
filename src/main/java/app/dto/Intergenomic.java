@@ -5,9 +5,10 @@ import java.io.Serializable;
 /**
  * Created by milene.guimaraes on 09/09/16.
  */
-public class Intragenomic implements Serializable {
+public class Intergenomic implements Serializable {
 
     String seqName;
+    String orfsPtns;
     String ec_number;
     String enzymeDescription;
     String organism;
@@ -15,15 +16,8 @@ public class Intragenomic implements Serializable {
     String pdbBestHit;
     String pdbIdentity;
     String foldScopId;
+    String superFamily;
     String literature_function;
-
-    public String getSeqName() {
-        return seqName;
-    }
-
-    public void setSeqName(String seqName) {
-        this.seqName = seqName;
-    }
 
     public String getEc_number() {
         return ec_number;
@@ -47,6 +41,22 @@ public class Intragenomic implements Serializable {
 
     public void setOrganism(String organism) {
         this.organism = organism;
+    }
+
+    public String getSeqName() {
+        return seqName;
+    }
+
+    public void setSeqName(String seqName) {
+        this.seqName = seqName;
+    }
+
+    public String getOrfsPtns() {
+        return orfsPtns;
+    }
+
+    public void setOrfsPtns(String orfsPtns) {
+        this.orfsPtns = orfsPtns;
     }
 
     public String getUniprotId() {
@@ -79,6 +89,14 @@ public class Intragenomic implements Serializable {
 
     public void setFoldScopId(String foldScopId) {
         this.foldScopId = foldScopId;
+    }
+
+    public String getSuperFamily() {
+        return superFamily;
+    }
+
+    public void setSuperFamily(String superFamily) {
+        this.superFamily = superFamily;
     }
 
     public String getLiterature_function() {
