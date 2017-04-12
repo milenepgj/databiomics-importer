@@ -36,6 +36,7 @@
         <mapping resource="Fasta.hbm.xml"></mapping>
         <mapping resource="MRnaFasta.hbm.xml"></mapping>
         <mapping resource="Intragenomic.hbm.xml"></mapping>
+        <mapping resource="Intergenomic.hbm.xml"></mapping>
 
     </session-factory>
 </hibernate-configuration>

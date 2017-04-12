@@ -8,13 +8,18 @@ import java.io.Serializable;
 public class Intragenomic implements Serializable {
 
     String seqName;
+    String orfsPtns;
     String ec_number;
+    String tpm;
+    String fpkm;
     String enzymeDescription;
-    String organism;
-    String uniprotId;
-    String pdbBestHit;
-    String pdbIdentity;
-    String foldScopId;
+    String uniref100;
+    Double length;
+    Double numberHits;
+    String eValue;
+    Double simMean;
+    String fold;
+    String superfamily;
     String literature_function;
 
     public String getSeqName() {
@@ -25,12 +30,36 @@ public class Intragenomic implements Serializable {
         this.seqName = seqName;
     }
 
+    public String getOrfsPtns() {
+        return orfsPtns;
+    }
+
+    public void setOrfsPtns(String orfsPtns) {
+        this.orfsPtns = orfsPtns;
+    }
+
     public String getEc_number() {
         return ec_number;
     }
 
     public void setEc_number(String ec_number) {
         this.ec_number = ec_number;
+    }
+
+    public String getTpm() {
+        return tpm;
+    }
+
+    public void setTpm(String tpm) {
+        this.tpm = tpm;
+    }
+
+    public String getFpkm() {
+        return fpkm;
+    }
+
+    public void setFpkm(String fpkm) {
+        this.fpkm = fpkm;
     }
 
     public String getEnzymeDescription() {
@@ -41,44 +70,60 @@ public class Intragenomic implements Serializable {
         this.enzymeDescription = enzymeDescription;
     }
 
-    public String getOrganism() {
-        return organism;
+    public String getUniref100() {
+        return uniref100;
     }
 
-    public void setOrganism(String organism) {
-        this.organism = organism;
+    public void setUniref100(String uniref100) {
+        this.uniref100 = uniref100;
     }
 
-    public String getUniprotId() {
-        return uniprotId;
+    public double getLength() {
+        return length;
     }
 
-    public void setUniprotId(String uniprotId) {
-        this.uniprotId = uniprotId;
+    public void setLength(Double length) {
+        this.length = length;
     }
 
-    public String getPdbBestHit() {
-        return pdbBestHit;
+    public Double getNumberHits() {
+        return numberHits;
     }
 
-    public void setPdbBestHit(String pdbBestHit) {
-        this.pdbBestHit = pdbBestHit;
+    public void setNumberHits(Double numberHits) {
+        this.numberHits = numberHits;
     }
 
-    public String getPdbIdentity() {
-        return pdbIdentity;
+    public String geteValue() {
+        return eValue;
     }
 
-    public void setPdbIdentity(String pdbIdentity) {
-        this.pdbIdentity = pdbIdentity;
+    public void seteValue(String eValue) {
+        this.eValue = eValue;
     }
 
-    public String getFoldScopId() {
-        return foldScopId;
+    public Double getSimMean() {
+        return simMean;
     }
 
-    public void setFoldScopId(String foldScopId) {
-        this.foldScopId = foldScopId;
+    public void setSimMean(Double simMean) {
+        this.simMean = simMean;
+    }
+
+    public String getFold() {
+        return fold;
+    }
+
+    public void setFold(String fold) {
+        this.fold = fold;
+    }
+
+    public String getSuperfamily() {
+        return superfamily;
+    }
+
+    public void setSuperfamily(String superfamily) {
+        this.superfamily = superfamily;
     }
 
     public String getLiterature_function() {

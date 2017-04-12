@@ -345,6 +345,26 @@ public class ImportDataBiomicDataService {
 
     }
 
+    private static Object getIntergenomicBySequenceOrf(Intergenomic intergenomic) {
+
+        //https://www.mkyong.com/hibernate/different-between-session-get-and-session-load/
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session session = sf.openSession();
+        Object returnObject = null;
+        String hql = "from table s where s.seqName = :seqName and s.orfsPtns = :orfsPtns and s.uniprotId = :uniprotId and s.pdbBestHit = :pdbBestHit";
+
+        hql = hql.replaceAll("table", "Intergenomic");
+
+        returnObject = session.createQuery(hql)
+                .setProperties(intergenomic).uniqueResult();
+
+        session.close();
+
+        return returnObject;
+
+    }
+
     private List<MRnaFasta> saveMRnaFastaData(MRnaFasta mRnafasta, String fastaContent, List<MRnaFasta> fastas){
 
         SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -398,7 +418,7 @@ public class ImportDataBiomicDataService {
         Session session = sf.openSession();
         session.beginTransaction();
 
-        session.saveOrUpdate(object);
+        session.save(object);
 
         session.getTransaction().commit();
 
@@ -667,7 +687,6 @@ public class ImportDataBiomicDataService {
         }
     }
 
-
     public void importIntergenomicData(String filesPath, String file) throws IOException, InvalidFormatException {
 
         String arquivo = filesPath + File.separator + file;
@@ -716,36 +735,56 @@ public class ImportDataBiomicDataService {
                         String[] seqOrf = cellValue.split("\\|");
 
                         intergenomic.setSeqName(seqOrf[0]);
-                        intergenomic.setOrfsPtns(seqOrf[1].length() > 1?seqOrf[1]:"");
+                        intergenomic.setOrfsPtns(seqOrf.length > 1?seqOrf[1]:"");
 
                         cell = cellIterator.next();
                         cellValue = cell.getStringCellValue();
                         intergenomic.setUniprotId(cellValue.replaceAll("'",""));
 
                         cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
+                        try{
+                            cellValue = cell.getStringCellValue();
+                        }catch (IllegalStateException e){
+                            double cellValueDouble = cell.getNumericCellValue();
+                            cellValue = String.valueOf(cellValueDouble);
+                            if (cellValue.equals("4.0E11")) cellValue = "4E+11";
+                            if (cellValue.equals("1.0E32")) cellValue = "1E+32";
+                            if (cellValue.equals("1.0E69")) cellValue = "1E+69";
+                            if (cellValue.equals("30000.0")) cellValue = "3E+04";
+                        }
                         intergenomic.setPdbBestHit(cellValue.replaceAll("'",""));
 
-                        cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
-                        intergenomic.setPdbIdentity(cellValue.replaceAll("'",""));
+                        //Get the intergenomic data
+                        Intergenomic intergenomicData = (Intergenomic) getIntergenomicBySequenceOrf(intergenomic);
 
-                        cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
-                        intergenomic.setFoldScopId(cellValue.replaceAll("'",""));
+                        if (intergenomicData == null){
 
-                        cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
-                        intergenomic.setSuperFamily(cellValue.replaceAll("'",""));
 
-                        cell = cellIterator.next();
-                        cellValue = cell.getStringCellValue();
-                        intergenomic.setLiterature_function(cellValue.replaceAll("'",""));
+                            cell = cellIterator.next();
+                            cellValue = cell.getStringCellValue();
+                            intergenomic.setPdbIdentity(cellValue.replaceAll("'",""));
 
-                        intragenomics.add((Intergenomic)save(intergenomic));
+                            cell = cellIterator.next();
+                            cellValue = cell.getStringCellValue();
+                            intergenomic.setFoldScopId(cellValue.replaceAll("'",""));
+
+                            cell = cellIterator.next();
+                            cellValue = cell.getStringCellValue();
+                            intergenomic.setSuperFamily(cellValue.replaceAll("'",""));
+
+                            cell = cellIterator.next();
+                            cellValue = cell.getStringCellValue();
+                            intergenomic.setLiterature_function(cellValue.replaceAll("'",""));
+
+                            intragenomics.add((Intergenomic)save(intergenomic));
+                            System.out.println("TOTAL ITEMS ON INTERGENOMIC TABLE:" + intragenomics.size());
+                        }else{
+                            System.out.println("INTERGENOMIC DATA IMPORTED ANOTHER TIME:" + intergenomic.getSeqName() + "|" + intergenomic.getOrfsPtns() + "|" + intergenomic.getPdbIdentity());
+                        }
+
                     }
 
-                    System.out.println("TOTAL ITEMS ON INTERGENOMIC TABLE:" + intragenomics.size());
+
                 }catch(NoSuchElementException e){
                     System.out.println("TOTAL ITEMS ON INTERGENOMIC TABLE:" + intragenomics.size());
                 }
